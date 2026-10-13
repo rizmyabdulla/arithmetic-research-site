@@ -1,0 +1,173 @@
+---
+import Logo from './Logo.astro';
+import Arrow from './Arrow.astro';
+import { nav, site } from '../data/site';
+import { products, statusLabel } from '../data/products';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer env-ink" data-tone="dark">
+  <div class="wrap">
+    <div class="site-footer__top">
+      <div class="site-footer__intro">
+        <Logo size={34} withWordmark={false} />
+        <p class="site-footer__line">
+          A technology company building <span class="serif">intelligent</span> products — one proof at a time.
+        </p>
+        <a class="btn site-footer__cta" href="/contact">
+          Start a conversation <Arrow />
+        </a>
+      </div>
+
+      <nav class="site-footer__cols" aria-label="Footer">
+        <div>
+          <p class="label">Company</p>
+          <ul role="list">
+            <li><a class="link" href="/">Home</a></li>
+            {nav.map((item) => <li><a class="link" href={item.href}>{item.label}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="label">Products</p>
+          <ul role="list">
+            {
+              products.map((p) => (
+                <li>
+                  <a class="link" href={`/products/${p.slug}`}>
+                    {p.name}
+                  </a>
+                  <span class="mono site-footer__status">{statusLabel[p.status]}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <p class="label">Write to us</p>
+          <ul role="list">
+            <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
+            {
+              site.social.map((s) => (
+                <li>
+                  <a class="link" href={s.href} rel="me noopener" target="_blank">
+                    {s.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <p class="site-footer__giant" aria-hidden="true">
+      <span>Arithmetic</span>
+    </p>
+
+    <div class="site-footer__bottom mono">
+      <p>© {year} {site.name}</p>
+      <p class="muted">Ink, paper &amp; a red pen.</p>
+      <a href="#main" class="site-footer__top-link">Back to top <Arrow dir="up-right" /></a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(5rem, 10vw, 9rem);
+    --accent: var(--signal);
+  }
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+    gap: clamp(3rem, 8vw, 8rem);
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+  .site-footer__intro {
+    display: grid;
+    gap: 1.75rem;
+    align-content: start;
+    justify-items: start;
+  }
+  .site-footer__line {
+    font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 520;
+    max-width: 18ch;
+  }
+  .site-footer__cta {
+    --btn-bg: var(--paper);
+    --btn-fg: var(--ink);
+  }
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+  .site-footer__cols ul {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .site-footer__cols li {
+    display: grid;
+    gap: 0.15rem;
+    justify-items: start;
+  }
+  .site-footer__status {
+    color: var(--fog);
+    font-size: 0.62rem;
+  }
+  .site-footer__giant {
+    font-size: clamp(5rem, 21.5vw, 22rem);
+    font-weight: 680;
+    letter-spacing: -0.065em;
+    line-height: 0.74;
+    white-space: nowrap;
+    margin-inline: -0.04em;
+    color: transparent;
+    user-select: none;
+    height: 0.62em;
+    overflow: hidden;
+  }
+  .site-footer__giant span {
+    display: block;
+    background: linear-gradient(180deg, rgb(236 235 229 / 0.95) 0%, rgb(236 235 229 / 0.5) 45%, rgb(236 235 229 / 0) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .site-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-block: 1.5rem 2rem;
+    border-top: 1px solid var(--rule-ink);
+    color: var(--fog);
+  }
+  .site-footer__top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--paper);
+  }
+
+  @media (max-width: 960px) {
+    .site-footer__top {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .site-footer__cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .site-footer__cols > div:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

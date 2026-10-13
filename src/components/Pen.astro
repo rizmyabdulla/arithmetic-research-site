@@ -1,0 +1,10 @@
+---
+/** Wraps a word in a hand-drawn red-pen ellipse that draws itself on scroll. */
+---
+
+<span class="pen" data-pen>
+  <slot />
+  <svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M62 4C30 2 5 10 4 25c-1 14 26 22 58 21 30-1 55-9 54-23C115 9 88 2 52 6"></path>
+  </svg>
+</span>

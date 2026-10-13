@@ -1,0 +1,113 @@
+---
+/**
+ * 01 — Premise. A single statement that resolves word by word as you scroll.
+ * Words are split at build time so there is no flash or layout shift.
+ */
+import Pen from '../Pen.astro';
+
+const before = 'Everything we call intelligence is, underneath,';
+const after =
+  'a vast number of small, exact operations. We build the systems that put those operations to work — agents that answer, software that decides, automation that carries the load — and ship them as products people rely on.';
+const words = (s: string) => s.split(' ');
+---
+
+<section id="premise" class="premise" data-env="paper" data-tone="light" aria-labelledby="premise-label">
+  <div class="premise__sticky wrap">
+    <div class="premise__head">
+      <p class="label" id="premise-label">01 — Premise</p>
+      <p class="mono muted premise__eq" aria-hidden="true">intelligence = Σ operations</p>
+    </div>
+    <p class="premise__text" data-premise>
+      {words(before).map((w) => <span class="w">{w} </span>)}
+      <span class="w"><Pen><span class="serif">arithmetic</span></Pen>: </span>
+      {words(after).map((w) => <span class="w">{w} </span>)}
+    </p>
+  </div>
+</section>
+
+<style>
+  .premise {
+    position: relative;
+    height: 230vh;
+  }
+  .premise__sticky {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    align-content: start;
+    gap: 2rem;
+    padding-block: calc(var(--header-h) + 12vh) 3rem;
+  }
+  .premise__head {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding-top: 0.6rem;
+  }
+  .premise__eq {
+    text-transform: none;
+  }
+  .premise__text {
+    font-size: clamp(1.9rem, 3.5vw, 3.9rem);
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+    font-weight: 560;
+    max-width: 25ch;
+  }
+  .premise__text .serif {
+    font-weight: 400;
+    font-size: 1.1em;
+  }
+  .w {
+    transition: none;
+  }
+  @media (max-width: 820px) {
+    .premise {
+      height: 190vh;
+    }
+    .premise__sticky {
+      grid-template-columns: 1fr;
+      align-content: center;
+    }
+    .premise__text {
+      font-size: clamp(1.8rem, 8vw, 3rem);
+    }
+  }
+  :global(.no-js) .premise,
+  :global(.reduce-motion) .premise {
+    height: auto;
+  }
+  :global(.no-js) .premise__sticky,
+  :global(.reduce-motion) .premise__sticky {
+    position: relative;
+    padding-block: var(--section);
+    min-height: 0;
+  }
+</style>
+
+<script>
+  import { gsap, reducedMotion } from '../../scripts/motion';
+  const el = document.querySelector<HTMLElement>('[data-premise]');
+  if (el && !reducedMotion()) {
+    const words = el.querySelectorAll('.w');
+    gsap.set(words, { opacity: 0.12 });
+    gsap.to(
+      words,
+      {
+        opacity: 1,
+        duration: 1,
+        ease: 'none',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: el.closest('section'),
+          start: 'top 45%',
+          end: 'bottom 85%',
+          scrub: 0.4,
+        },
+      },
+    );
+  }
+</script>

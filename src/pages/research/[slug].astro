@@ -1,0 +1,80 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import { focusAreas } from '../../data/company';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+interface Props {
+  note: CollectionEntry<'notes'>;
+}
+const { note } = Astro.props;
+const { Content } = await render(note);
+const area = focusAreas.find((a) => a.code === note.data.area);
+const fmt = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: note.data.title,
+    description: note.data.description,
+    datePublished: note.data.date.toISOString(),
+    publisher: { '@type': 'Organization', name: 'Arithmetic Research' },
+  },
+];
+---
+
+<Base title={note.data.title} description={note.data.description} tone="light" schema={schema}>
+  <article class="article env-paper">
+    <header class="wrap article__head">
+      <a class="mono link article__back" href="/research#notebook">← Notebook</a>
+      <p class="mono muted article__meta">
+        <time datetime={note.data.date.toISOString()}>{fmt.format(note.data.date)}</time>
+        <span>{note.data.kind}</span>
+        {area && <span>{area.code} · {area.title}</span>}
+      </p>
+      <h1 class="h1 article__title" data-split>{note.data.title}</h1>
+      <p class="lead muted" data-reveal>{note.data.description}</p>
+    </header>
+    <div class="wrap">
+      <div class="prose article__body">
+        <Content />
+      </div>
+      <footer class="article__foot">
+        <a class="btn" href="/research#notebook">Back to the notebook <Arrow /></a>
+      </footer>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .article {
+    padding: calc(var(--header-h) + 4rem) 0 var(--section);
+  }
+  .article__head {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 62rem;
+    margin-bottom: 4rem;
+  }
+  .article__back {
+    justify-self: start;
+  }
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+  .article__body,
+  .article__foot {
+    margin-left: clamp(0rem, 12vw, 14rem);
+  }
+  .article__foot {
+    margin-top: 4rem;
+  }
+</style>

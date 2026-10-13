@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Premise from '../components/home/Premise.astro';
+import Operators from '../components/home/Operators.astro';
+import Ecosystem from '../components/home/Ecosystem.astro';
+import ProductChapter from '../components/home/ProductChapter.astro';
+import Approach from '../components/home/Approach.astro';
+import Principles from '../components/home/Principles.astro';
+import Future from '../components/home/Future.astro';
+import Finale from '../components/home/Finale.astro';
+import { products } from '../data/products';
+---
+
+<Base tone="dark">
+  <div class="story" data-story>
+    <Hero />
+    <Premise />
+    <Operators />
+    <Ecosystem />
+    {products.map((p, i) => <ProductChapter product={p} index={i + 1} />)}
+    <Approach />
+    <Principles />
+    <Future />
+    <Finale />
+  </div>
+</Base>
+
+<script>
+  import { initStory } from '../scripts/story';
+  initStory();
+</script>

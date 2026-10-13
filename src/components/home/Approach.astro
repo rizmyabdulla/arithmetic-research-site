@@ -1,0 +1,152 @@
+---
+/**
+ * 04 — Approach. How we build intelligent systems, laid out as a worked sum.
+ */
+import Pen from '../Pen.astro';
+import { approach } from '../../data/company';
+---
+
+<section id="approach" class="approach ledger" data-env="paper" data-tone="light" aria-labelledby="approach-title">
+  <div class="wrap approach__grid">
+    <header class="approach__head">
+      <p class="label">04 — Approach</p>
+      <h2 id="approach-title" class="display">
+        <span data-split>Show your</span>
+        <Pen><span class="serif">work.</span></Pen>
+      </h2>
+      <p class="lead muted" data-reveal>
+        The rule every arithmetic teacher enforces is the one we build by. An answer you cannot trace is not an
+        answer — in maths, or in an AI system running someone’s business.
+      </p>
+    </header>
+
+    <div class="sum" role="list" aria-label="Our process">
+      {
+        approach.map((a, i) => (
+          <div class="sum__row" role="listitem" data-sum-row>
+            <span class="sum__op" aria-hidden="true">
+              {i === 0 ? '' : '+'}
+            </span>
+            <h3 class="sum__step">{a.step}</h3>
+            <p class="sum__body">{a.body}</p>
+          </div>
+        ))
+      }
+      <div class="sum__line" data-draw aria-hidden="true"></div>
+      <div class="sum__row sum__row--total" role="listitem" data-sum-row>
+        <span class="sum__op" aria-hidden="true">=</span>
+        <p class="sum__step">
+          A product people rely on<span class="sum__carry" aria-hidden="true"></span>
+        </p>
+        <p class="sum__body">…and a carried digit for the next one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .approach {
+    padding-block: var(--section);
+  }
+  .approach__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(3rem, 7vw, 8rem);
+    align-items: start;
+  }
+  .approach__head {
+    position: sticky;
+    top: calc(var(--header-h) + 6vh);
+    display: grid;
+    gap: 2rem;
+  }
+  .approach__head .display {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.25em;
+  }
+  .sum {
+    font-variant-numeric: tabular-nums;
+  }
+  .sum__row {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sum__op {
+    font-family: var(--f-mono);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .sum__step {
+    font-size: clamp(2rem, 3.6vw, 3.4rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+  .sum__body {
+    color: var(--muted);
+  }
+  .sum__line {
+    height: 3px;
+    background: var(--fg);
+    margin-top: -1px;
+  }
+  .sum__row--total {
+    border-bottom: 0;
+  }
+  .sum__row--total .sum__step {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .sum__carry {
+    display: inline-block;
+    width: 0.32em;
+    height: 0.32em;
+    margin-left: 0.15em;
+    background: var(--signal);
+    vertical-align: super;
+  }
+
+  @media (max-width: 960px) {
+    .approach__grid {
+      grid-template-columns: 1fr;
+    }
+    .approach__head {
+      position: relative;
+      top: 0;
+    }
+  }
+  @media (max-width: 620px) {
+    .sum__row {
+      grid-template-columns: 2rem 1fr;
+      gap: 0.75rem 1rem;
+    }
+    .sum__body {
+      grid-column: 2;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reducedMotion } from '../../scripts/motion';
+  if (!reducedMotion()) {
+    document.querySelectorAll<HTMLElement>('[data-sum-row]').forEach((row) => {
+      gsap.from(row.children, {
+        opacity: 0,
+        x: (i) => (i === 0 ? -20 : 40),
+        stagger: 0.08,
+        duration: 1.1,
+        scrollTrigger: { trigger: row, start: 'top 85%', once: true },
+      });
+    });
+  }
+</script>

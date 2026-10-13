@@ -1,0 +1,410 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import OperatorGlyph from '../components/OperatorGlyph.astro';
+import Pen from '../components/Pen.astro';
+import Arrow from '../components/Arrow.astro';
+import { products } from '../data/products';
+import { principles } from '../data/company';
+
+const layers = [
+  {
+    name: 'Products',
+    items: [...products.map((p) => p.name), 'Next'],
+    note: 'Distinct businesses, own identities, own customers.',
+  },
+  {
+    name: 'Shared foundation',
+    items: ['Research', 'Engineering', 'Infrastructure', 'Design'],
+    note: 'What every product inherits, and improves.',
+  },
+  {
+    name: 'Arithmetic Research',
+    items: ['Direction', 'Standards', 'Long-term bets'],
+    note: 'The parent company and its discipline.',
+  },
+];
+---
+
+<Base
+  title="About"
+  description="Arithmetic Research is a technology company building AI-powered products, intelligent agents and automation — the parent company of Kordify and VoiceAgento."
+  tone="dark"
+>
+  <PageHero
+    label="About"
+    lead="Arithmetic Research is a technology company focused on artificial intelligence, intelligent automation and AI agents. We research, design, engineer and run our own products."
+    fig="Fig. A — Who we are, in one equation"
+  >
+    <Fragment slot="title">A company that <span class="serif">ships its research.</span></Fragment>
+    <div slot="figure" class="afig"><OperatorGlyph symbol="=" /></div>
+  </PageHero>
+
+  <section class="ab env-paper" data-tone="light" aria-labelledby="ab-who">
+    <div class="wrap ab__cols">
+      <h2 id="ab-who" class="label">Who we are</h2>
+      <div class="ab__text">
+        <p class="ab__big" data-split>
+          We are the parent company behind {products.map((p) => p.name).join(' and ')} — and the products that will
+          follow them.
+        </p>
+        <div class="ab__two" data-stagger>
+          <p>
+            Each of our products starts from a specific, stubborn operational problem: a field team that loses hours to
+            scheduling, a phone line nobody can answer at 2 a.m. We study the work, model it precisely, and build
+            software that applies AI where it earns its place and dependable engineering everywhere else.
+          </p>
+          <p>
+            Products launch under their own names because their customers deserve a product built entirely for them.
+            Arithmetic Research is what connects them: shared research, shared engineering, shared standards, and a
+            habit of carrying every lesson into the next build.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="name env-ink" data-tone="dark" aria-labelledby="name-title">
+    <div class="wrap name__grid">
+      <p class="label">The name</p>
+      <h2 id="name-title" class="name__title" data-split>
+        Why <span class="serif">arithmetic?</span>
+      </h2>
+      <div class="name__body">
+        <p class="name__lead" data-reveal>
+          Because underneath every model, agent and automation is the most basic, most reliable kind of computation
+          there is.
+        </p>
+        <p class="muted" data-reveal>
+          Arithmetic is exact. It can be checked. Anyone can follow the working. We chose the name as a standard to be
+          held to: intelligent systems should be built up from fundamentals, should <Pen>show their work</Pen>, and
+          should be correct before they are impressive.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack env-paper ledger" data-tone="light" aria-labelledby="stack-title">
+    <div class="wrap">
+      <div class="stack__head">
+        <p class="label">How the company is built</p>
+        <h2 id="stack-title" class="h1" data-split>One company. <span class="serif">Many terms.</span></h2>
+      </div>
+      <ol class="stack__layers" role="list" data-stagger>
+        {
+          layers.map((l, i) => (
+            <li class:list={['stack__layer', `stack__layer--${i}`]}>
+              <div class="stack__name">
+                <span class="mono">L{layers.length - i}</span>
+                <h3>{l.name}</h3>
+                <p class="muted">{l.note}</p>
+              </div>
+              <ul class="stack__items" role="list">
+                {l.items.map((it) => (
+                  <li class:list={[it === 'Next' && 'is-next']}>{it === 'Next' ? 'x₃ = ?' : it}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="believe env-ink" data-tone="dark" aria-labelledby="believe-title">
+    <div class="wrap believe__grid">
+      <div class="believe__head">
+        <p class="label">What we believe</p>
+        <h2 id="believe-title" class="h1" data-split>Working <span class="serif">assumptions.</span></h2>
+      </div>
+      <dl class="believe__list" data-stagger>
+        {
+          principles.map((p, i) => (
+            <div>
+              <dt>
+                <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+                {p.title}
+              </dt>
+              <dd class="muted">{p.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="long env-paper" data-tone="light" aria-labelledby="long-title">
+    <div class="wrap long__grid">
+      <p class="label">Long-term</p>
+      <h2 id="long-title" class="display" data-split>
+        The long <span class="serif">sum.</span>
+      </h2>
+      <div class="long__body">
+        <p class="lead" data-reveal>
+          Our ambition is a family of intelligent products, each excellent on its own, each making the next one faster
+          to build and harder to break.
+        </p>
+        <p class="muted" data-reveal>
+          We want AI that a business can depend on the way it depends on arithmetic: quietly, exactly, every day. That
+          takes research that stays close to real operations, engineering that respects the messy case, and the
+          patience to compound small results into large ones. That is the work, and it has only just started.
+        </p>
+        <div class="long__ctas" data-reveal>
+          <a class="btn" href="/contact">Work with us <Arrow /></a>
+          <a class="link" href="/research">See what we research</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .afig {
+    width: min(20rem, 70%);
+    margin-left: auto;
+    color: var(--paper);
+    position: relative;
+  }
+  .afig::before {
+    content: '';
+    position: absolute;
+    width: 14%;
+    aspect-ratio: 1;
+    background: var(--signal);
+    left: -18%;
+    top: 30%;
+  }
+  .afig :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .ab {
+    padding-block: var(--section);
+  }
+  .ab__cols {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 2rem;
+  }
+  .ab__cols .label {
+    align-self: start;
+    padding-top: 0.75rem;
+  }
+  .ab__text {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  .ab__big {
+    font-size: clamp(2rem, 4.2vw, 4.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+    font-weight: 570;
+    max-width: 20ch;
+  }
+  .ab__two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 3rem;
+    color: var(--muted);
+    font-size: 1.06rem;
+  }
+
+  .name {
+    padding-block: var(--section);
+  }
+  .name__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 2rem;
+  }
+  .name__grid .label {
+    grid-row: span 2;
+    align-self: start;
+    padding-top: 1rem;
+  }
+  .name__title {
+    font-size: var(--t-hero);
+    font-weight: 650;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+  .name__title .serif {
+    color: var(--signal);
+  }
+  .name__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 3rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .name__lead {
+    font-size: var(--t-lead);
+    line-height: 1.4;
+  }
+
+  .stack {
+    padding-block: var(--section);
+  }
+  .stack__head {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .stack__layers {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .stack__layer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+  }
+  .stack__layer--2 {
+    background: var(--ink);
+    color: var(--paper);
+    --muted: var(--fog);
+  }
+  .stack__layer--1 {
+    margin-inline: clamp(0rem, 3vw, 3rem);
+  }
+  .stack__layer--0 {
+    margin-inline: clamp(0rem, 6vw, 6rem);
+  }
+  .stack__name {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+    align-items: baseline;
+  }
+  .stack__name .mono {
+    color: var(--signal-ink);
+  }
+  .stack__layer--2 .stack__name .mono {
+    color: var(--signal);
+  }
+  .stack__name h3 {
+    font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+  }
+  .stack__name p {
+    grid-column: 2;
+    font-size: 0.92rem;
+  }
+  .stack__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  .stack__items li {
+    padding: 0.45rem 0.85rem;
+    border: 1px solid currentColor;
+    font-size: 0.95rem;
+  }
+  .stack__items .is-next {
+    border-style: dashed;
+    font-family: var(--f-mono);
+    font-size: 0.82rem;
+  }
+
+  .believe {
+    padding-block: var(--section);
+  }
+  .believe__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 3rem;
+    align-items: start;
+  }
+  .believe__head {
+    display: grid;
+    gap: 1.5rem;
+    position: sticky;
+    top: calc(var(--header-h) + 3rem);
+  }
+  .believe__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+    margin: 0;
+  }
+  .believe__list > div {
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--rule);
+  }
+  .believe__list dt {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .believe__list dt .mono {
+    color: var(--signal);
+  }
+  .believe__list dd {
+    margin-top: 0.6rem;
+  }
+
+  .long {
+    padding-block: var(--section);
+  }
+  .long__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 2rem;
+  }
+  .long__grid .label {
+    grid-row: span 2;
+    padding-top: 1rem;
+    align-self: start;
+  }
+  .long__body {
+    display: grid;
+    gap: 1.75rem;
+    max-width: 44rem;
+    margin-top: 1.5rem;
+  }
+  .long__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+  }
+
+  @media (max-width: 900px) {
+    .ab__cols,
+    .name__grid,
+    .believe__grid,
+    .long__grid,
+    .stack__layer {
+      grid-template-columns: 1fr;
+    }
+    .ab__two,
+    .name__body,
+    .believe__list {
+      grid-template-columns: 1fr;
+    }
+    .name__grid .label,
+    .long__grid .label {
+      grid-row: auto;
+    }
+    .believe__head {
+      position: relative;
+      top: 0;
+    }
+    .stack__items {
+      justify-content: flex-start;
+    }
+    .stack__layer--0,
+    .stack__layer--1 {
+      margin-inline: 0;
+    }
+  }
+</style>

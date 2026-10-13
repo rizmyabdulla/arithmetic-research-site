@@ -1,0 +1,233 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProductChapter from '../../components/home/ProductChapter.astro';
+import OperatorGlyph from '../../components/OperatorGlyph.astro';
+import Arrow from '../../components/Arrow.astro';
+import { products, statusLabel, subscript } from '../../data/products';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Arithmetic Research products',
+    itemListElement: products.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'SoftwareApplication',
+        name: p.name,
+        description: p.summary,
+        url: p.url,
+        applicationCategory: 'BusinessApplication',
+      },
+    })),
+  },
+];
+---
+
+<Base
+  title="Products"
+  description="The Arithmetic Research product ecosystem: Kordify, AI-powered field service management, and VoiceAgento, AI voice agents with a human desk built in."
+  tone="dark"
+  schema={schema}
+>
+  <PageHero
+    label="Products"
+    lead="Each product is its own company-sized idea, with its own name, identity and customers. Underneath, they share our research, our engineering and the lessons each one carries to the next."
+    fig={`Fig. P — ${products.length} terms solved, more in progress`}
+  >
+    <Fragment slot="title">The terms, <span class="serif">so far.</span></Fragment>
+    <div slot="figure" class="pfig">
+      <OperatorGlyph symbol="+" />
+    </div>
+  </PageHero>
+
+  <section class="pindex env-ink" data-tone="dark" aria-labelledby="pindex-title">
+    <div class="wrap">
+      <h2 id="pindex-title" class="sr-only">Product index</h2>
+      <div class="ptable" role="table" aria-label="All products">
+        <div class="ptable__row ptable__row--head mono" role="row">
+          <span role="columnheader">n</span>
+          <span role="columnheader">Product</span>
+          <span role="columnheader">Category</span>
+          <span role="columnheader">Platforms</span>
+          <span role="columnheader">Status</span>
+          <span role="columnheader"><span class="sr-only">Link</span></span>
+        </div>
+        {
+          products.map((p, i) => (
+            <a class="ptable__row" role="row" href={`#product-${p.slug}`} style={`--row-accent:${p.theme.accent}`}>
+              <span role="cell" class="mono ptable__n">
+                x{subscript(i + 1)}
+              </span>
+              <span role="cell" class="ptable__name">
+                {p.name}
+              </span>
+              <span role="cell" class="ptable__cat">
+                {p.category}
+              </span>
+              <span role="cell" class="ptable__plat mono">
+                {p.platforms.join(' · ')}
+              </span>
+              <span role="cell" class="ptable__status status">
+                {statusLabel[p.status]}
+              </span>
+              <span role="cell" class="ptable__go">
+                <Arrow dir="down" />
+              </span>
+            </a>
+          ))
+        }
+        <div class="ptable__row ptable__row--future" role="row">
+          <span role="cell" class="mono ptable__n">x{subscript(products.length + 1)}</span>
+          <span role="cell" class="ptable__name serif">Next</span>
+          <span role="cell" class="ptable__cat muted">In development</span>
+          <span role="cell" class="ptable__plat mono">—</span>
+          <span role="cell" class="ptable__status mono muted">Unannounced</span>
+          <span role="cell"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="story" data-story>
+    {products.map((p, i) => <ProductChapter product={p} index={i + 1} />)}
+
+    <section class="pnext" data-env="paper" data-tone="light" aria-labelledby="pnext-title">
+      <div class="wrap pnext__grid">
+        <p class="label">What comes next</p>
+        <h2 id="pnext-title" class="display" data-split>
+          There is room on this page <span class="serif">for what we build next.</span>
+        </h2>
+        <div class="pnext__body" data-reveal>
+          <p class="lead muted">
+            New products are announced here when they are ready. If you run an operation that should not still
+            depend on manual work, or you want to build or distribute with us, we would like to hear from you.
+          </p>
+          <a class="btn" href="/contact?topic=partner">Talk about a partnership <Arrow /></a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import { initStory } from '../../scripts/story';
+  initStory();
+</script>
+
+<style>
+  .pfig {
+    width: min(22rem, 70%);
+    margin-left: auto;
+    color: var(--signal);
+  }
+  .pfig :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .pindex {
+    padding-bottom: var(--section);
+  }
+  .ptable {
+    border-top: 1px solid var(--fg);
+  }
+  .ptable__row {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1.2fr) minmax(0, 1.6fr) minmax(0, 1fr) 9rem 1.5rem;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    transition: padding 0.5s var(--ease-out), background-color 0.4s;
+  }
+  .ptable__row--head {
+    padding: 0.9rem 0;
+    color: var(--muted);
+  }
+  a.ptable__row:hover,
+  a.ptable__row:focus-visible {
+    padding-left: 1rem;
+    background: rgb(236 235 229 / 0.04);
+  }
+  .ptable__n {
+    color: var(--row-accent, var(--muted));
+    text-transform: none;
+    font-size: 0.9rem;
+  }
+  .ptable__name {
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .ptable__cat {
+    color: var(--muted);
+  }
+  .ptable__plat {
+    color: var(--muted);
+  }
+  .ptable__status {
+    color: var(--row-accent, var(--muted));
+  }
+  .ptable__row--future .ptable__name {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .ptable__go :global(.arrow) {
+    transition: transform 0.4s var(--ease-out);
+  }
+  a.ptable__row:hover .ptable__go :global(.arrow) {
+    transform: translateY(4px);
+  }
+
+  .pnext {
+    padding-block: var(--section);
+  }
+  .pnext__grid {
+    display: grid;
+    gap: 2rem;
+  }
+  .pnext .display {
+    max-width: 16ch;
+  }
+  .pnext__body {
+    display: grid;
+    gap: 2rem;
+    justify-items: start;
+    max-width: 44rem;
+  }
+
+  @media (max-width: 900px) {
+    .ptable__row {
+      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+      grid-template-areas:
+        'n name go'
+        'n cat cat'
+        'n status status';
+      row-gap: 0.4rem;
+    }
+    .ptable__row--head {
+      display: none;
+    }
+    .ptable__n {
+      grid-area: n;
+    }
+    .ptable__name {
+      grid-area: name;
+    }
+    .ptable__cat {
+      grid-area: cat;
+    }
+    .ptable__plat {
+      display: none;
+    }
+    .ptable__status {
+      grid-area: status;
+    }
+    .ptable__go {
+      grid-area: go;
+    }
+  }
+</style>

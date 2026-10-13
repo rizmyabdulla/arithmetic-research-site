@@ -1,0 +1,118 @@
+---
+/**
+ * VoiceAgento motif — one call as a waveform. The AI handles the first part;
+ * at the handoff the call passes to a person, with the context attached.
+ * Illustrative, not product UI.
+ */
+const bars = 64;
+const handoff = 38;
+// Deterministic pseudo-random amplitudes (no hydration mismatch, no Math.random at build)
+const amp = Array.from({ length: bars }, (_, i) => {
+  const v = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+  const env = 0.35 + 0.65 * Math.sin((i / bars) * Math.PI);
+  return Math.max(0.08, v * env);
+});
+const w = 600;
+const gap = w / bars;
+---
+
+<div class="wave">
+  <svg class="viz viz--wave" viewBox="0 0 600 260" role="img" aria-label="Illustration: a call waveform handled by an AI agent, then handed to a person">
+    <g class="wave__bars">
+      {
+        amp.map((a, i) => (
+          <rect
+            x={i * gap + gap * 0.2}
+            y={130 - a * 110}
+            width={gap * 0.6}
+            height={a * 220}
+            class:list={[i < handoff ? 'is-ai' : 'is-human']}
+            style={`--d:${(i % 9) * 0.13}s`}
+            data-bar
+          />
+        ))
+      }
+    </g>
+    <line x1={handoff * gap - gap * 0.1} y1="0" x2={handoff * gap - gap * 0.1} y2="260" class="wave__cut" />
+    <text x="0" y="256" class="viz__label">AI agent</text>
+    <text x={handoff * gap + 8} y="256" class="viz__label">Your team</text>
+    <text x={handoff * gap + 8} y="14" class="viz__label wave__handoff">Handoff</text>
+  </svg>
+
+  <ol class="wave__transcript mono" role="list">
+    <li data-line><span>Caller</span>I’d like to speak to someone about my booking.</li>
+    <li data-line><span>Agent</span>Of course. I’m bringing in a colleague and sharing our call so far.</li>
+    <li data-line class="is-context"><span>Context</span>Transcript · Summary · Caller details</li>
+  </ol>
+</div>
+
+<style>
+  .viz {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .wave {
+    display: grid;
+    gap: 2rem;
+  }
+  .wave__bars rect {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: talk 1.6s var(--ease-io) infinite alternate;
+    animation-delay: var(--d);
+  }
+  .wave__bars .is-ai {
+    fill: var(--accent);
+  }
+  .wave__bars .is-human {
+    fill: var(--fg);
+  }
+  @keyframes talk {
+    from {
+      transform: scaleY(1);
+    }
+    to {
+      transform: scaleY(0.45);
+    }
+  }
+  .wave__cut {
+    stroke: var(--fg);
+    stroke-dasharray: 4 4;
+  }
+  .viz__label {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    fill: var(--fg);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .wave__handoff {
+    fill: var(--accent);
+  }
+  .wave__transcript {
+    display: grid;
+    gap: 0.75rem;
+    text-transform: none;
+    font-size: 0.8rem;
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+  .wave__transcript li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .wave__transcript span {
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    padding-top: 0.15em;
+  }
+  .wave__transcript .is-context {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+/**
+ * Opening for inner pages. Big split headline, a lead, an annotation rule and
+ * an optional figure slot (procedural graphic) on the right.
+ */
+interface Props {
+  label: string;
+  /** Plain text for the <h1>; use the `title` slot for richer markup. */
+  title?: string;
+  lead?: string;
+  env?: 'ink' | 'paper';
+  fig?: string;
+}
+const { label, title, lead, env = 'ink', fig } = Astro.props;
+const hasFigure = Astro.slots.has('figure');
+---
+
+<section
+  class:list={['phero', `env-${env}`, hasFigure && 'phero--fig']}
+  data-tone={env === 'ink' ? 'dark' : 'light'}
+>
+  <div class="wrap phero__grid">
+    <div class="phero__copy">
+      <p class="label">{label}</p>
+      <h1 class="phero__title" data-split>
+        <slot name="title">{title}</slot>
+      </h1>
+      {lead && <p class="lead phero__lead" data-reveal data-delay="0.35">{lead}</p>}
+      <slot />
+    </div>
+    {
+      hasFigure && (
+        <div class="phero__figure" data-reveal="scale" data-delay="0.2">
+          <slot name="figure" />
+        </div>
+      )
+    }
+  </div>
+  <div class="wrap phero__foot" aria-hidden="true">
+    <span class="phero__rule" data-draw></span>
+    {fig && <span class="mono muted">{fig}</span>}
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    padding-top: calc(var(--header-h) + clamp(4rem, 12vh, 9rem));
+    overflow: clip;
+  }
+  .phero__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: end;
+  }
+  .phero--fig .phero__grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+  .phero__copy {
+    display: grid;
+    gap: 2rem;
+  }
+  .phero__title {
+    font-size: var(--t-hero);
+    font-weight: 650;
+    letter-spacing: -0.06em;
+    line-height: 0.88;
+    margin-left: -0.04em;
+  }
+  .phero__title :global(.serif) {
+    font-size: 1.04em;
+    letter-spacing: -0.03em;
+  }
+  .phero__lead {
+    max-width: 40ch;
+    color: var(--muted);
+  }
+  .phero__figure {
+    width: 100%;
+    max-width: 30rem;
+    justify-self: end;
+  }
+  .phero__foot {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: clamp(3rem, 7vw, 6rem) 2rem;
+  }
+  .phero__rule {
+    flex: 1;
+    height: 1px;
+    background: var(--fg);
+    opacity: 0.6;
+  }
+  .phero__foot .mono {
+    text-transform: none;
+  }
+  @media (max-width: 820px) {
+    .phero--fig .phero__grid {
+      grid-template-columns: 1fr;
+    }
+    .phero__figure {
+      max-width: 18rem;
+      justify-self: start;
+      order: -1;
+    }
+  }
+</style>

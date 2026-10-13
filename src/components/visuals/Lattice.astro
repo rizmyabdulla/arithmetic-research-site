@@ -1,0 +1,46 @@
+---
+/**
+ * Default motif for products without a bespoke visual: a lattice of
+ * operations where a few cells are "computed". Seeded by the product name
+ * so every product gets a stable, distinct pattern.
+ */
+interface Props {
+  seed?: string;
+}
+const { seed = 'x' } = Astro.props;
+let h = 0;
+for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+const rand = () => ((h = (h * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+const n = 10;
+const cells = Array.from({ length: n * n }, (_, i) => ({ x: i % n, y: Math.floor(i / n), on: rand() > 0.78 }));
+---
+
+<svg class="viz" viewBox="0 0 600 600" role="img" aria-label="Illustration: a lattice of operations">
+  {
+    cells.map((c) => (
+      <rect
+        x={c.x * 60 + 10}
+        y={c.y * 60 + 10}
+        width="40"
+        height="40"
+        class:list={['lat', c.on && 'is-on']}
+      />
+    ))
+  }
+</svg>
+
+<style>
+  .viz {
+    width: 100%;
+    height: auto;
+  }
+  .lat {
+    fill: none;
+    stroke: var(--fg);
+    stroke-opacity: 0.18;
+  }
+  .lat.is-on {
+    fill: var(--accent);
+    stroke: none;
+  }
+</style>

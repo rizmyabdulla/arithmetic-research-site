@@ -1,0 +1,177 @@
+---
+/**
+ * 06 — Next. The open term in the sequence: future products without
+ * pretending to announce them.
+ */
+import { products, subscript } from '../../data/products';
+
+const next = products.length + 1;
+const sequence = [
+  ...products.map((p, i) => ({ k: `x${subscript(i + 1)}`, v: p.name, known: true })),
+  ...Array.from({ length: 6 }, (_, j) => ({ k: `x${subscript(next + j)}`, v: '?', known: false })),
+];
+---
+
+<section
+  id="next"
+  class="future"
+  data-env="custom"
+  data-tone="light"
+  style="--e-bg:#ff4d1a;--e-fg:#0c0c0a;--e-muted:#3d1405;--e-accent:#0c0c0a;--e-rule:rgb(12 12 10 / 0.18)"
+  aria-labelledby="future-title"
+>
+  <div class="wrap future__top">
+    <p class="label">06 — What comes next</p>
+    <h2 id="future-title" class="future__eq">
+      <span class="sr-only">The next product is still an unknown.</span>
+      <span aria-hidden="true" class="future__x" data-future-x>
+        x<sub>{next}</sub>
+      </span>
+      <span aria-hidden="true" class="future__equals">=</span>
+      <span aria-hidden="true" class="future__q serif" data-future-q>?</span>
+    </h2>
+  </div>
+
+  <div class="future__tape" aria-hidden="true">
+    <div class="future__seq" data-future-seq>
+      {
+        [...sequence, ...sequence].map((s) => (
+          <span class:list={['future__term', s.known && 'is-known']}>
+            <span class="mono">{s.k}</span>
+            {s.v}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="wrap future__body">
+    <p class="future__lead" data-reveal>
+      Kordify and VoiceAgento are the first terms in a longer sequence. More products, platforms and technologies are
+      in development.
+    </p>
+    <p class="future__note" data-reveal>
+      We will introduce each one when it is ready to stand on its own — with its own name, its own identity and a
+      place on this page. Until then, the next term stays unsolved.
+    </p>
+  </div>
+</section>
+
+<style>
+  .future {
+    position: relative;
+    padding-block: var(--section);
+    overflow: clip;
+  }
+  .future__top {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .future .label::before {
+    background: var(--fg);
+  }
+  .future__eq {
+    display: flex;
+    align-items: baseline;
+    gap: 0.12em;
+    font-size: clamp(7rem, 30vw, 32rem);
+    font-weight: 650;
+    letter-spacing: -0.07em;
+    line-height: 0.8;
+    margin-left: -0.05em;
+  }
+  .future__x sub {
+    font-size: 0.32em;
+    vertical-align: baseline;
+    letter-spacing: 0;
+    margin-left: 0.02em;
+  }
+  .future__equals {
+    font-weight: 300;
+    padding: 0 0.04em;
+  }
+  .future__q {
+    font-size: 1.05em;
+    line-height: 0.7;
+    display: inline-block;
+    color: var(--paper);
+  }
+  .future__tape {
+    margin-block: clamp(3rem, 6vw, 5rem);
+    border-block: 1px solid var(--fg);
+    padding-block: 1rem;
+    overflow: hidden;
+  }
+  .future__seq {
+    display: flex;
+    gap: 3rem;
+    width: max-content;
+    will-change: transform;
+  }
+  .future__term {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+    font-weight: 560;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    opacity: 0.45;
+  }
+  .future__term.is-known {
+    opacity: 1;
+  }
+  .future__term .mono {
+    font-size: 0.8rem;
+    text-transform: none;
+  }
+  .future__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 2rem clamp(2rem, 6vw, 6rem);
+    align-items: end;
+  }
+  .future__lead {
+    font-size: clamp(1.6rem, 3vw, 2.8rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 560;
+    max-width: 22ch;
+  }
+  .future__note {
+    color: var(--muted);
+    max-width: 40ch;
+  }
+  @media (max-width: 820px) {
+    .future__body {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reducedMotion } from '../../scripts/motion';
+  const seq = document.querySelector<HTMLElement>('[data-future-seq]');
+  const q = document.querySelector<HTMLElement>('[data-future-q]');
+  const section = seq?.closest('section');
+  if (seq && q && section && !reducedMotion()) {
+    // The sequence drifts with scroll — the faster you scroll, the further it runs.
+    gsap.fromTo(
+      seq,
+      { xPercent: 0 },
+      {
+        xPercent: -50,
+        ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+      },
+    );
+    // The unknown never quite settles.
+    gsap.to(q, { rotate: 8, y: -12, duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    gsap.from('[data-future-x]', {
+      xPercent: -30,
+      opacity: 0,
+      duration: 1.6,
+      scrollTrigger: { trigger: section, start: 'top 70%', once: true },
+    });
+  }
+</script>

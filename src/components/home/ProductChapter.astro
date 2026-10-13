@@ -1,0 +1,277 @@
+---
+/**
+ * One product, told in its own environment. Rendered once per entry in
+ * src/data/products.ts — adding a product adds a chapter.
+ */
+import type { Product } from '../../data/products';
+import { statusLabel, subscript } from '../../data/products';
+import ProductVisual from '../ProductVisual.astro';
+import Arrow from '../Arrow.astro';
+
+interface Props {
+  product: Product;
+  index: number;
+}
+const { product: p, index } = Astro.props;
+const t = p.theme;
+const ruleColor = t.tone === 'dark' ? 'rgb(255 255 255 / 0.1)' : 'rgb(0 0 0 / 0.1)';
+const style = `--e-bg:${t.bg};--e-fg:${t.ink};--e-muted:${t.muted};--e-accent:${t.accent};--e-rule:${ruleColor};--on-accent:${t.onAccent}`;
+---
+
+<section
+  id={`product-${p.slug}`}
+  class="chapter"
+  data-env="custom"
+  data-tone={t.tone}
+  style={style}
+  aria-labelledby={`chapter-${p.slug}`}
+  data-chapter
+>
+  <span class="chapter__ghost" aria-hidden="true" data-parallax="0.12">x{subscript(index)}</span>
+
+  <div class="wrap chapter__grid">
+    <div class="chapter__copy">
+      <div class="chapter__meta">
+        <p class="mono chapter__idx">
+          <span>x{subscript(index)}</span> — {p.category}
+        </p>
+        <p class="status chapter__status">{statusLabel[p.status]}</p>
+      </div>
+
+      <h2 id={`chapter-${p.slug}`} class="chapter__name" data-split>{p.name}</h2>
+      <p class="chapter__headline serif" data-reveal>“{p.headline}”</p>
+      <p class="chapter__summary" data-reveal>{p.summary}</p>
+
+      <ol class="chapter__caps" role="list" data-stagger>
+        {
+          p.capabilities.slice(0, 3).map((c, i) => (
+            <li>
+              <span class="mono">0{i + 1}</span>
+              <div>
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="chapter__ctas" data-reveal>
+        <a class="btn chapter__btn" href={`/products/${p.slug}`}>
+          Explore {p.name} <Arrow />
+        </a>
+        <a class="link chapter__ext" href={p.url} target="_blank" rel="noopener">
+          {p.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+          <Arrow dir="up-right" />
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="chapter__visual" data-chapter-visual>
+      <div class="chapter__frame">
+        <ProductVisual product={p} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .chapter {
+    position: relative;
+    padding-block: var(--section);
+    overflow: clip;
+  }
+  .chapter__ghost {
+    position: absolute;
+    right: -0.04em;
+    top: 4vh;
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: clamp(14rem, 40vw, 44rem);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--rule);
+    pointer-events: none;
+    user-select: none;
+  }
+  .chapter__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(3rem, 7vw, 8rem);
+    align-items: start;
+  }
+  .chapter__copy {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .chapter__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .chapter__idx {
+    color: var(--muted);
+  }
+  .chapter__idx span {
+    color: var(--accent);
+    text-transform: none;
+  }
+  .chapter__status {
+    color: var(--accent);
+  }
+  .chapter__name {
+    font-size: clamp(3rem, 6.6vw, 7.5rem);
+    font-weight: 660;
+    letter-spacing: -0.065em;
+    line-height: 0.86;
+    margin-left: -0.04em;
+  }
+  .chapter__headline {
+    font-size: clamp(1.6rem, 2.6vw, 2.5rem);
+    line-height: 1.08;
+    max-width: 20ch;
+  }
+  .chapter__summary {
+    font-size: var(--t-lead);
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 38ch;
+  }
+  .chapter__caps {
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+  .chapter__caps li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .chapter__caps .mono {
+    color: var(--accent);
+    padding-top: 0.3rem;
+  }
+  .chapter__caps h3 {
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+  .chapter__caps p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+  .chapter__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    padding-top: 0.5rem;
+  }
+  .chapter__btn {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--on-accent);
+  }
+  .chapter__btn::before {
+    background: var(--fg);
+  }
+  .chapter__btn:hover,
+  .chapter__btn:focus-visible {
+    color: var(--bg);
+  }
+  .chapter__ext {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+  }
+  .chapter__visual {
+    position: sticky;
+    top: calc(var(--header-h) + 4vh);
+  }
+  .chapter__frame {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--fg) 3%, transparent);
+  }
+
+  @media (max-width: 960px) {
+    .chapter__name {
+      font-size: clamp(3rem, 14vw, 7rem);
+    }
+    .chapter__grid {
+      grid-template-columns: 1fr;
+    }
+    .chapter__visual {
+      position: relative;
+      top: 0;
+      order: -1;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reducedMotion } from '../../scripts/motion';
+
+  if (!reducedMotion()) {
+    document.querySelectorAll<HTMLElement>('[data-chapter]').forEach((chapter) => {
+      const visual = chapter.querySelector<HTMLElement>('[data-chapter-visual]');
+      if (!visual) return;
+
+      // Routes draw themselves as the chapter scrolls by.
+      const routes = visual.querySelectorAll('[data-route]');
+      if (routes.length) {
+        gsap.set(routes, { strokeDashoffset: 1 });
+        gsap.to(
+          routes,
+          {
+            strokeDashoffset: 0,
+            ease: 'none',
+            stagger: 0.15,
+            scrollTrigger: { trigger: visual, start: 'top 75%', end: 'bottom 45%', scrub: 0.6 },
+          },
+        );
+      }
+
+      // The call plays out left to right.
+      const wave = visual.querySelector('.viz--wave');
+      if (wave) {
+        gsap.fromTo(
+          wave,
+          { clipPath: 'inset(0 100% 0 0)' },
+          {
+            clipPath: 'inset(0 0% 0 0)',
+            ease: 'none',
+            scrollTrigger: { trigger: visual, start: 'top 80%', end: 'center 50%', scrub: 0.6 },
+          },
+        );
+      }
+      const lines = visual.querySelectorAll('[data-line]');
+      if (lines.length) {
+        gsap.from(lines, {
+          opacity: 0,
+          y: 16,
+          stagger: 0.45,
+          duration: 1,
+          delay: 0.6,
+          scrollTrigger: { trigger: visual, start: 'top 70%', once: true },
+        });
+      }
+
+      // The frame settles into place.
+      gsap.from(visual, {
+        y: 80,
+        opacity: 0,
+        duration: 1.4,
+        scrollTrigger: { trigger: chapter, start: 'top 70%', once: true },
+      });
+    });
+  }
+</script>

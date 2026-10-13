@@ -1,0 +1,275 @@
+---
+/**
+ * Fig. 0 — the opening equation.
+ * A particle field assembles into the company mark (an equals sign with a
+ * carried digit). The first scroll resolves the field into solid bars, which
+ * then open out to become the paper the rest of the story is written on.
+ */
+import { site } from '../../data/site';
+---
+
+<section class="hero" data-hero data-tone="dark" data-env="ink" aria-labelledby="hero-title">
+  <div class="hero__stage" data-hero-stage>
+    <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
+
+    <div class="hero__eq" data-hero-eq aria-hidden="true">
+      <span class="hero__carry" data-eq="carry"></span>
+      <span class="hero__bar hero__bar--top" data-eq="top"></span>
+      <span class="hero__bar hero__bar--bot" data-eq="bot"></span>
+    </div>
+
+    <div class="hero__type wrap">
+      <h1 id="hero-title" class="hero__title">
+        <span class="hero__word hero__word--a" data-hero-word="a">Arithmetic</span>
+        <span class="hero__word hero__word--b" data-hero-word="b">Research</span>
+      </h1>
+
+      <div class="hero__meta" data-hero-fade>
+        <p class="hero__tag"><span class="serif">{site.tagline}</span></p>
+        <p class="hero__intro">
+          An AI research and product company. We build intelligent agents, automation and the software
+          systems around them — and ship them as products people rely on.
+        </p>
+      </div>
+    </div>
+
+    <div class="hero__annot hero__annot--tl mono" data-hero-fade aria-hidden="true">
+      <span>Fig. 0</span>
+      <span class="muted">The equals sign, with a carried digit</span>
+    </div>
+    <div class="hero__annot hero__annot--tr mono" data-hero-fade aria-hidden="true">
+      <span data-hero-coords>x 0.500 · y 0.500</span>
+    </div>
+    <a class="hero__cue mono" href="#premise" data-hero-fade>
+      <span>Scroll to compute</span>
+      <span class="hero__cue-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--ink);
+    color: var(--paper);
+    --muted: var(--fog);
+  }
+  .hero__stage {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
+  }
+  .hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The equation glyph. Geometry here is the single source of truth:
+     the canvas samples particle positions from these elements. */
+  .hero__eq {
+    --u: min(5.6vw, 9.2vh);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--u) * 7.2);
+    height: calc(var(--u) * 3.1);
+    transform: translate(-36%, -50%);
+    pointer-events: none;
+  }
+  .hero__bar,
+  .hero__carry {
+    position: absolute;
+    display: block;
+    height: calc(var(--u) * 1.15);
+    background: var(--paper);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .hero__carry {
+    left: 0;
+    top: 0;
+    width: calc(var(--u) * 1.15);
+    background: var(--signal);
+  }
+  .hero__bar--top {
+    left: calc(var(--u) * 1.9);
+    right: 0;
+    top: 0;
+  }
+  .hero__bar--bot {
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  :global(.no-js) .hero__bar,
+  :global(.no-js) .hero__carry,
+  :global(.reduce-motion) .hero__bar,
+  :global(.reduce-motion) .hero__carry {
+    opacity: 1;
+  }
+
+  .hero__type {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .hero__title {
+    font-size: clamp(3.4rem, 13.2vw, 15rem);
+    font-weight: 650;
+    letter-spacing: -0.06em;
+    line-height: 0.8;
+    margin: 0;
+  }
+  .hero__word {
+    position: absolute;
+    display: block;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  .hero__word--a {
+    left: calc(var(--gutter) - 0.05em);
+    top: calc(var(--header-h) + 3vh);
+  }
+  .hero__word--b {
+    right: calc(var(--gutter) - 0.02em);
+    bottom: 11vh;
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    font-size: 1.12em;
+  }
+  .hero__meta {
+    position: absolute;
+    left: var(--gutter);
+    bottom: calc(11vh + 0.4rem);
+    max-width: min(30rem, 38vw);
+    display: grid;
+    gap: 0.9rem;
+    pointer-events: auto;
+  }
+  .hero__tag {
+    font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+    line-height: 1.05;
+    color: var(--signal);
+  }
+  .hero__intro {
+    color: var(--fog);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .hero__annot {
+    position: absolute;
+    display: grid;
+    gap: 0.3rem;
+    color: var(--paper);
+  }
+  .hero__annot--tl {
+    left: var(--gutter);
+    top: calc(var(--header-h) + 3vh + clamp(3.4rem, 13.2vw, 15rem) * 0.86);
+  }
+  .hero__annot--tr {
+    right: var(--gutter);
+    top: calc(var(--header-h) + 1.5vh);
+    font-variant-numeric: tabular-nums;
+    color: var(--fog);
+  }
+  .hero__cue {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 3.2vh;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--fog);
+    padding: 0.5rem 0;
+  }
+  .hero__cue:hover {
+    color: var(--paper);
+  }
+  .hero__cue-line {
+    position: relative;
+    width: 4.5rem;
+    height: 1px;
+    background: rgb(236 235 229 / 0.2);
+    overflow: hidden;
+  }
+  .hero__cue-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--signal);
+    transform: translateX(-100%);
+    animation: cue 2.4s var(--ease-io) infinite;
+  }
+  @keyframes cue {
+    50% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Initial intro state (motion only) */
+  :global(.js:not(.reduce-motion)) .hero__word,
+  :global(.js:not(.reduce-motion)) [data-hero-fade] {
+    opacity: 0;
+  }
+
+  @media (max-width: 820px) {
+    .hero__eq {
+      --u: min(11.5vw, 6.8vh);
+      transform: translate(-50%, -50%);
+      top: 47%;
+    }
+    .hero__title {
+      font-size: clamp(3.2rem, 17.5vw, 8rem);
+    }
+    .hero__word--a {
+      top: calc(var(--header-h) + 2vh);
+    }
+    .hero__word--b {
+      left: calc(var(--gutter) - 0.04em);
+      right: auto;
+      top: calc(var(--header-h) + 2vh + 0.82em);
+      bottom: auto;
+    }
+    .hero__meta {
+      max-width: none;
+      right: var(--gutter);
+      bottom: 4.5rem;
+    }
+    .hero__annot--tl {
+      display: none;
+    }
+    .hero__annot--tr {
+      top: auto;
+      bottom: 2.2rem;
+      left: var(--gutter);
+      right: auto;
+      font-size: 0.62rem;
+    }
+    .hero__cue {
+      bottom: 1.6rem;
+    }
+    .hero__cue span:first-child {
+      display: none;
+    }
+  }
+  @media (max-width: 820px) and (max-height: 700px) {
+    .hero__intro {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initHero } from '../../scripts/hero';
+  initHero();
+</script>

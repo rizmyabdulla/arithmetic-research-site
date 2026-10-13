@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import { nav } from '../data/site';
+---
+
+<Base title="Page not found" description="This page does not exist." tone="dark" noindex>
+  <section class="nf env-ink" data-tone="dark" aria-labelledby="nf-title">
+    <div class="wrap nf__inner">
+      <p class="mono muted nf__code" aria-hidden="true">Error 404</p>
+      <p class="nf__eq" aria-hidden="true">
+        x <span class="nf__neq">≠</span> <span class="serif">found</span>
+      </p>
+      <h1 id="nf-title" class="h2">This page does not compute.</h1>
+      <p class="muted nf__text">
+        The address may be mistyped, or the page may have moved. Here is where everything lives:
+      </p>
+      <ul class="nf__links" role="list">
+        <li><a class="btn" href="/">Back to the beginning <Arrow /></a></li>
+        {nav.map((n) => <li><a class="link" href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding: calc(var(--header-h) + 3rem) 0 4rem;
+  }
+  .nf__inner {
+    display: grid;
+    gap: 1.75rem;
+    justify-items: start;
+  }
+  .nf__eq {
+    font-size: clamp(5rem, 20vw, 20rem);
+    font-weight: 650;
+    letter-spacing: -0.06em;
+    line-height: 0.8;
+  }
+  .nf__neq {
+    color: var(--signal);
+    font-weight: 300;
+  }
+  .nf__text {
+    max-width: 40ch;
+  }
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin-top: 1rem;
+  }
+</style>
