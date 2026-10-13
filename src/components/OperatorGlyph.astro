@@ -1,0 +1,52 @@
+---
+/**
+ * Operators drawn from the same rectangles as the mark: square ends,
+ * equal stroke weight, red squares where a dot would be.
+ */
+interface Props {
+  symbol: string;
+  class?: string;
+}
+const { symbol, class: className } = Astro.props;
+const t = 14; // stroke thickness in a 100-unit box
+const c = 50 - t / 2;
+---
+
+<svg class:list={['op-glyph', className]} viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+  {symbol === '+' && (
+    <g>
+      <rect x="6" y={c} width="88" height={t} />
+      <rect x={c} y="6" width={t} height="88" />
+    </g>
+  )}
+  {symbol === '−' && <rect x="6" y={c} width="88" height={t} />}
+  {symbol === '×' && (
+    <g transform="rotate(45 50 50)">
+      <rect x="2" y={c} width="96" height={t} />
+      <rect x={c} y="2" width={t} height="96" />
+    </g>
+  )}
+  {symbol === '÷' && (
+    <g>
+      <rect x="6" y={c} width="88" height={t} />
+      <rect class="op-glyph__dot" x={c} y="12" width={t} height={t} />
+      <rect class="op-glyph__dot" x={c} y={100 - 12 - t} width={t} height={t} />
+    </g>
+  )}
+  {symbol === '=' && (
+    <g>
+      <rect x="6" y={50 - t - 6} width="88" height={t} />
+      <rect x="6" y={56} width="88" height={t} />
+    </g>
+  )}
+</svg>
+
+<style>
+  .op-glyph {
+    fill: currentColor;
+    overflow: visible;
+  }
+  .op-glyph__dot {
+    fill: var(--signal);
+  }
+</style>

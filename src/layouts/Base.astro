@@ -1,0 +1,108 @@
+---
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '../styles/global.css';
+import interTightLatin from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { products } from '../data/products';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path to the social preview image, relative to the site root. */
+  image?: string;
+  /** Tone of the first screen, so the header starts with the right color. */
+  tone?: 'dark' | 'light';
+  noindex?: boolean;
+  /** Extra JSON-LD objects for this page. */
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/og.png',
+  tone = 'light',
+  noindex = false,
+  schema = [],
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).toString();
+const ogImage = new URL(image, site.url).toString();
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  url: site.url,
+  logo: new URL('/favicon.svg', site.url).toString(),
+  email: site.email,
+  description: site.description,
+  brand: products.map((p) => ({ '@type': 'Brand', name: p.name, url: p.url })),
+  ...(site.social.length ? { sameAs: site.social.map((s) => s.href) } : {}),
+};
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <link rel="preload" href={interTightLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content={tone === 'dark' ? '#0c0c0a' : '#ecebe5'} />
+    <meta name="color-scheme" content="light dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify([organization, ...schema])} />
+
+    <!-- Mark JS as available so reveal states apply before first paint.
+         If the motion system has not booted within 2.5s, fall back to static content. -->
+    <script is:inline>
+      document.documentElement.classList.replace('no-js', 'js');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reduce-motion');
+      setTimeout(function () {
+        if (!window.__arMotion) document.documentElement.classList.replace('js', 'no-js');
+      }, 2500);
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header tone={tone} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import { initMotion } from '../scripts/motion';
+      initMotion();
+    </script>
+  </body>
+</html>

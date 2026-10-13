@@ -1,0 +1,143 @@
+---
+/**
+ * 07 — Finale. The hero opened the equals sign; the finale closes it.
+ */
+import Arrow from '../Arrow.astro';
+import { site } from '../../data/site';
+---
+
+<section id="contact-cta" class="finale" data-env="ink" data-tone="dark" aria-labelledby="finale-title">
+  <div class="finale__eq" aria-hidden="true" data-finale-eq>
+    <span class="finale__carry" data-finale-carry></span>
+    <span class="finale__bar finale__bar--top" data-finale-top></span>
+    <span class="finale__bar finale__bar--bot" data-finale-bot></span>
+  </div>
+
+  <div class="wrap finale__inner">
+    <p class="label">07 — Your move</p>
+    <h2 id="finale-title" class="finale__title" data-split>
+      Bring us a <span class="serif">hard</span> problem.
+    </h2>
+    <div class="finale__row" data-reveal>
+      <p class="finale__text">
+        Customers, partners, researchers and builders: if it can be modeled, measured and shipped, we would like to hear
+        about it.
+      </p>
+      <div class="finale__ctas">
+        <a class="btn finale__btn" href="/contact">Start a conversation <Arrow /></a>
+        <a class="link mono finale__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .finale {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    align-content: end;
+    padding-block: calc(var(--header-h) + 8vh) clamp(4rem, 8vw, 7rem);
+    overflow: clip;
+  }
+  .finale__eq {
+    --u: min(4.4vw, 7vh);
+    position: absolute;
+    right: var(--gutter);
+    top: calc(var(--header-h) + 6vh);
+    width: calc(var(--u) * 7.2);
+    height: calc(var(--u) * 3.1);
+  }
+  .finale__bar,
+  .finale__carry {
+    position: absolute;
+    height: calc(var(--u) * 1.15);
+    background: var(--fg);
+  }
+  .finale__carry {
+    left: 0;
+    top: 0;
+    width: calc(var(--u) * 1.15);
+    background: var(--signal);
+  }
+  .finale__bar--top {
+    left: calc(var(--u) * 1.9);
+    right: 0;
+    top: 0;
+  }
+  .finale__bar--bot {
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .finale__inner {
+    position: relative;
+    display: grid;
+    gap: 2.5rem;
+  }
+  .finale__title {
+    font-size: var(--t-hero);
+    font-weight: 650;
+    letter-spacing: -0.06em;
+    line-height: 0.86;
+    max-width: 10ch;
+  }
+  .finale__title .serif {
+    color: var(--signal);
+  }
+  .finale__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem 4rem;
+    align-items: end;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+  }
+  .finale__text {
+    font-size: var(--t-lead);
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 40ch;
+  }
+  .finale__ctas {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  .finale__btn {
+    --btn-bg: var(--signal);
+    --btn-fg: var(--ink);
+  }
+  .finale__btn::before {
+    background: var(--paper);
+  }
+  .finale__mail {
+    text-transform: none;
+    font-size: 0.85rem;
+  }
+  @media (max-width: 820px) {
+    .finale__eq {
+      --u: 9vw;
+      top: calc(var(--header-h) + 4vh);
+    }
+    .finale__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reducedMotion } from '../../scripts/motion';
+  const eq = document.querySelector<HTMLElement>('[data-finale-eq]');
+  if (eq && !reducedMotion()) {
+    const section = eq.closest('section')!;
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: section, start: 'top 85%', end: 'top 15%', scrub: 0.8 },
+    });
+    tl.fromTo('[data-finale-top]', { xPercent: -160, opacity: 0 }, { xPercent: 0, opacity: 1 }, 0)
+      .fromTo('[data-finale-bot]', { xPercent: 160, opacity: 0 }, { xPercent: 0, opacity: 1 }, 0)
+      .fromTo('[data-finale-carry]', { yPercent: -400, rotate: -180, opacity: 0 }, { yPercent: 0, rotate: 0, opacity: 1 }, 0.35);
+  }
+</script>

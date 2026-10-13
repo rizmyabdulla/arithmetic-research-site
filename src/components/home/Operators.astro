@@ -1,0 +1,291 @@
+---
+/**
+ * 02 — What we build. Four operators as a horizontal sequence (desktop),
+ * a vertical stack on smaller screens and with reduced motion.
+ */
+import OperatorGlyph from '../OperatorGlyph.astro';
+import { operators } from '../../data/company';
+---
+
+<section id="build" class="ops" data-env="ink" data-tone="dark" aria-labelledby="ops-title">
+  <div class="ops__pin" data-ops-pin>
+    <div class="ops__track" data-ops-track>
+      <header class="ops__intro">
+        <p class="label">02 — What we build</p>
+        <h2 id="ops-title" class="display" data-split>
+          Four operations. <span class="serif">One discipline.</span>
+        </h2>
+        <p class="lead muted" data-reveal>
+          We work where AI meets real operations: the phone line, the dispatch board, the invoice queue. Every
+          product we build is some combination of these four moves.
+        </p>
+      </header>
+
+      {
+        operators.map((op, i) => (
+          <article class="ops__panel" data-ops-panel aria-labelledby={`op-${i}`}>
+            <div class="ops__glyph" data-ops-glyph>
+              <OperatorGlyph symbol={op.symbol} />
+            </div>
+            <div class="ops__body">
+              <p class="mono ops__index">
+                <span class="ops__n">0{i + 1}</span> / Operation — {op.name}
+              </p>
+              <h3 id={`op-${i}`} class="h1 ops__title">{op.title}</h3>
+              <p class="ops__text">{op.body}</p>
+              <p class="ops__proof">
+                <span class="mono">In practice</span>
+                {op.proof}
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="ops__progress" aria-hidden="true">
+      <div class="ops__progress-bar"><span data-ops-progress></span></div>
+      <ol class="mono">
+        {operators.map((op) => <li>{op.symbol}</li>)}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ops {
+    position: relative;
+    overflow: clip;
+  }
+  .ops__pin {
+    position: relative;
+  }
+  .ops__track {
+    display: flex;
+    flex-direction: column;
+  }
+  .ops__intro {
+    padding: var(--section) var(--gutter) clamp(3rem, 8vw, 6rem);
+    display: grid;
+    gap: 2rem;
+    max-width: var(--max);
+  }
+  .ops__intro .display {
+    max-width: 11ch;
+  }
+  .ops__panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    padding: 3.5rem var(--gutter) 4.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .ops__glyph {
+    width: clamp(7rem, 34vw, 13rem);
+    aspect-ratio: 1;
+    color: var(--fg);
+  }
+  .ops__glyph :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .ops__body {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+    max-width: 34rem;
+  }
+  .ops__index {
+    color: var(--muted);
+  }
+  .ops__n {
+    color: var(--accent);
+  }
+  .ops__title {
+    max-width: 10ch;
+  }
+  .ops__text {
+    font-size: var(--t-lead);
+    line-height: 1.45;
+    letter-spacing: -0.012em;
+  }
+  .ops__proof {
+    display: grid;
+    gap: 0.4rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .ops__proof .mono {
+    color: var(--accent);
+  }
+  .ops__progress {
+    display: none;
+  }
+
+  /* Horizontal mode — enabled by script on wide screens with motion. */
+  :global(.ops-h) .ops__pin {
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+  :global(.ops-h) .ops__track {
+    flex-direction: row;
+    height: 100%;
+    width: max-content;
+    will-change: transform;
+  }
+  :global(.ops-h) .ops__intro {
+    width: 52vw;
+    flex: none;
+    align-content: center;
+    padding: var(--header-h) var(--gutter) 0;
+  }
+  :global(.ops-h) .ops__panel {
+    flex: none;
+    width: min(78vw, 1180px);
+    height: 100%;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 6rem);
+    padding: var(--header-h) 5vw 0;
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+  }
+  :global(.ops-h) .ops__glyph {
+    width: min(30vw, 58vh);
+    justify-self: center;
+  }
+  :global(.ops-h) .ops__progress {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 2.25rem;
+  }
+  .ops__progress-bar {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .ops__progress-bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .ops__progress ol {
+    display: flex;
+    gap: 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  @media (min-width: 821px) {
+    .ops__panel {
+      grid-template-columns: minmax(0, 0.6fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, reducedMotion } from '../../scripts/motion';
+
+  const section = document.querySelector<HTMLElement>('.ops');
+  const pin = section?.querySelector<HTMLElement>('[data-ops-pin]');
+  const track = section?.querySelector<HTMLElement>('[data-ops-track]');
+  const bar = section?.querySelector<HTMLElement>('[data-ops-progress]');
+
+  if (section && pin && track && bar && !reducedMotion()) {
+    const mm = gsap.matchMedia();
+
+    mm.add('(min-width: 1024px) and (min-height: 600px)', () => {
+      section.classList.add('ops-h');
+      const distance = () => track.scrollWidth - window.innerWidth;
+
+      const scroll = gsap.to(track, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${distance()}`,
+          pin: pin,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          onUpdate: (self) => gsap.set(bar, { scaleX: self.progress }),
+        },
+      });
+
+      section.querySelectorAll<HTMLElement>('[data-ops-panel]').forEach((panel) => {
+        const glyph = panel.querySelector('[data-ops-glyph]');
+        const body = panel.querySelector('.ops__body');
+        gsap.fromTo(
+          glyph,
+          { rotate: -90, scale: 0.55, opacity: 0.2 },
+          {
+            rotate: 0,
+            scale: 1,
+            opacity: 1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: panel,
+              containerAnimation: scroll,
+              start: 'left 95%',
+              end: 'left 30%',
+              scrub: true,
+            },
+          },
+        );
+        gsap.fromTo(
+          body,
+          { x: 120, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: panel,
+              containerAnimation: scroll,
+              start: 'left 80%',
+              end: 'left 35%',
+              scrub: true,
+            },
+          },
+        );
+      });
+
+      return () => section.classList.remove('ops-h');
+    });
+
+    mm.add('(max-width: 1023.98px), (max-height: 599.98px)', () => {
+      section.querySelectorAll<HTMLElement>('[data-ops-panel]').forEach((panel) => {
+        const glyph = panel.querySelector('[data-ops-glyph]');
+        gsap.fromTo(
+          glyph,
+          { rotate: -90, scale: 0.6 },
+          {
+            rotate: 0,
+            scale: 1,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: panel, start: 'top 90%', end: 'top 40%', scrub: true },
+          },
+        );
+      });
+    });
+
+    ScrollTrigger.refresh();
+  }
+</script>

@@ -1,0 +1,399 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductVisual from '../../components/ProductVisual.astro';
+import Arrow from '../../components/Arrow.astro';
+import { products, statusLabel, subscript, type Product } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((product, i) => ({ params: { slug: product.slug }, props: { product, index: i } }));
+}
+
+interface Props {
+  product: Product;
+  index: number;
+}
+const { product: p, index } = Astro.props;
+const t = p.theme;
+const next = products[(index + 1) % products.length];
+const host = p.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const rule = t.tone === 'dark' ? 'rgb(255 255 255 / 0.12)' : 'rgb(0 0 0 / 0.12)';
+const vars = `--bg:${t.bg};--fg:${t.ink};--muted:${t.muted};--accent:${t.accent};--on-accent:${t.onAccent};--rule:${rule};--surface:${t.surface}`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: p.name,
+    description: p.summary,
+    url: p.url,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: p.platforms.join(', '),
+    publisher: { '@type': 'Organization', name: 'Arithmetic Research', url: 'https://arithmeticresearch.com' },
+  },
+];
+---
+
+<Base title={p.name} description={`${p.name} by Arithmetic Research — ${p.summary}`} tone={t.tone} schema={schema}>
+  <div class="pp" style={vars}>
+    <section class="pp__hero" data-tone={t.tone}>
+      <div class="wrap">
+        <nav class="pp__crumbs mono" aria-label="Breadcrumb">
+          <a class="link" href="/products">Products</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">x{subscript(index + 1)} {p.name}</span>
+        </nav>
+
+        <div class="pp__head">
+          <div class="pp__meta">
+            <p class="mono pp__cat">{p.category}</p>
+            <p class="status pp__status">{statusLabel[p.status]}</p>
+          </div>
+          <h1 class="pp__name" data-split>{p.name}</h1>
+          <p class="pp__headline serif" data-reveal data-delay="0.3">“{p.headline}”</p>
+        </div>
+
+        <div class="pp__intro">
+          <div class="pp__intro-copy" data-reveal data-delay="0.45">
+            <p class="pp__summary">{p.summary}</p>
+            <div class="pp__ctas">
+              <a class="btn pp__btn" href={p.url} target="_blank" rel="noopener">
+                {p.ctaLabel}
+                <Arrow dir="up-right" />
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+              <span class="mono muted pp__host">{host}</span>
+            </div>
+          </div>
+          <div class="pp__visual" data-reveal="scale" data-delay="0.2">
+            <ProductVisual product={p} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pp__section" data-tone={t.tone} aria-labelledby="pp-about">
+      <div class="wrap pp__cols">
+        <h2 id="pp-about" class="label">What it is</h2>
+        <div class="pp__desc">
+          {p.description.map((para, i) => <p class:list={[i === 0 && 'pp__lead']} data-reveal>{para}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="pp__section" data-tone={t.tone} aria-labelledby="pp-caps">
+      <div class="wrap">
+        <div class="pp__cols pp__cols--head">
+          <h2 id="pp-caps" class="label">Capabilities</h2>
+          <p class="h2" data-split>What {p.name} does.</p>
+        </div>
+        <ol class="pp__caps" role="list" data-stagger>
+          {
+            p.capabilities.map((c, i) => (
+              <li>
+                <span class="mono pp__caps-n">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="pp__section" data-tone={t.tone} aria-labelledby="pp-who">
+      <div class="wrap pp__cols">
+        <h2 id="pp-who" class="label">Built for</h2>
+        <div class="pp__who">
+          <ul class="pp__tags" role="list" data-stagger>
+            {p.audience.map((a) => <li>{a}</li>)}
+          </ul>
+          <p class="mono muted pp__plat">Available on {p.platforms.join(' · ')}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pp__outro" data-tone={t.tone}>
+      <div class="wrap pp__outro-grid">
+        <div>
+          <p class="label">The full picture</p>
+          <p class="pp__outro-title">
+            Pricing, demos and documentation live on <a class="link" href={p.url} target="_blank" rel="noopener">{host}<span class="sr-only"> (opens in a new tab)</span></a>.
+          </p>
+        </div>
+        <p class="muted pp__parent">
+          {p.name} is built by Arithmetic Research, alongside {products.filter((o) => o.slug !== p.slug).map((o) => o.name).join(', ')}.
+          Questions about partnerships or the company? <a class="link" href="/contact">Contact us</a>.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  {
+    next.slug !== p.slug && (
+      <a class="pp__next env-ink" href={`/products/${next.slug}`} data-tone="dark" style={`--next-accent:${next.theme.accent}`}>
+        <span class="wrap pp__next-inner">
+          <span class="mono muted">Next term — x{subscript(((index + 1) % products.length) + 1)}</span>
+          <span class="pp__next-name">
+            {next.name} <Arrow />
+          </span>
+          <span class="muted">{next.category}</span>
+        </span>
+      </a>
+    )
+  }
+</Base>
+
+<style>
+  .pp {
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .pp__hero {
+    padding-top: calc(var(--header-h) + 2.5rem);
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+  .pp__crumbs {
+    display: flex;
+    gap: 0.75rem;
+    color: var(--muted);
+    margin-bottom: clamp(3rem, 8vh, 6rem);
+  }
+  .pp__crumbs [aria-current] {
+    color: var(--fg);
+    text-transform: none;
+  }
+  .pp__head {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .pp__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pp__cat {
+    color: var(--muted);
+  }
+  .pp__status {
+    color: var(--accent);
+  }
+  .pp__name {
+    font-size: clamp(3.4rem, 13.5vw, 15rem);
+    font-weight: 660;
+    letter-spacing: -0.07em;
+    line-height: 0.82;
+    margin-left: -0.05em;
+  }
+  .pp__headline {
+    font-size: clamp(1.7rem, 3.4vw, 3.4rem);
+    line-height: 1.05;
+    max-width: 22ch;
+    color: var(--accent);
+  }
+  .pp__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(2.5rem, 6vw, 7rem);
+    margin-top: clamp(3rem, 7vw, 6rem);
+    align-items: start;
+  }
+  .pp__intro-copy {
+    display: grid;
+    gap: 2rem;
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+  .pp__summary {
+    font-size: var(--t-lead);
+    line-height: 1.45;
+    max-width: 34ch;
+  }
+  .pp__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .pp__btn {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--on-accent);
+  }
+  .pp__btn::before {
+    background: var(--fg);
+  }
+  .pp__btn:hover,
+  .pp__btn:focus-visible {
+    color: var(--bg);
+  }
+  .pp__host {
+    text-transform: none;
+  }
+  .pp__visual {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+  }
+
+  .pp__section {
+    padding-block: clamp(4rem, 9vw, 8rem);
+    border-top: 1px solid var(--rule);
+  }
+  .pp__cols {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 2rem;
+  }
+  .pp__cols--head {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    align-items: baseline;
+  }
+  .pp__cols .label {
+    align-self: start;
+  }
+  .pp__desc {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 44rem;
+    color: var(--muted);
+    font-size: 1.08rem;
+  }
+  .pp__lead {
+    color: var(--fg);
+    font-size: clamp(1.4rem, 2.3vw, 2rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .pp__caps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--fg);
+  }
+  .pp__caps li {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.75rem 1.75rem 2.25rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pp__caps li:not(:nth-child(3n + 1)) {
+    padding-left: 1.75rem;
+    border-left: 1px solid var(--rule);
+  }
+  .pp__caps-n {
+    color: var(--accent);
+  }
+  .pp__caps h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .pp__caps p {
+    color: var(--muted);
+  }
+  .pp__who {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .pp__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .pp__tags li {
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--rule);
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    letter-spacing: -0.015em;
+  }
+  .pp__plat {
+    text-transform: none;
+  }
+  .pp__outro {
+    padding-block: clamp(4rem, 9vw, 8rem);
+    border-top: 1px solid var(--rule);
+  }
+  .pp__outro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2rem 4rem;
+    align-items: end;
+  }
+  .pp__outro-title {
+    margin-top: 1.25rem;
+    font-size: clamp(1.8rem, 3.6vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-weight: 560;
+    max-width: 20ch;
+  }
+  .pp__parent {
+    max-width: 38ch;
+  }
+
+  .pp__next {
+    display: block;
+    padding-block: clamp(4rem, 9vw, 8rem);
+    border-bottom: 1px solid var(--rule-ink);
+  }
+  .pp__next-inner {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .pp__next-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    font-size: var(--t-display);
+    font-weight: 640;
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+    transition: color 0.4s var(--ease-out);
+  }
+  .pp__next-name :global(.arrow) {
+    width: 0.6em;
+    height: 0.6em;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .pp__next:hover .pp__next-name {
+    color: var(--next-accent);
+  }
+  .pp__next:hover .pp__next-name :global(.arrow) {
+    transform: translateX(0.15em);
+  }
+
+  @media (max-width: 960px) {
+    .pp__intro,
+    .pp__cols,
+    .pp__outro-grid {
+      grid-template-columns: 1fr;
+    }
+    .pp__intro-copy {
+      position: relative;
+      top: 0;
+    }
+    .pp__caps {
+      grid-template-columns: 1fr 1fr;
+    }
+    .pp__caps li:not(:nth-child(3n + 1)) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .pp__caps li:nth-child(2n) {
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--rule);
+    }
+  }
+  @media (max-width: 600px) {
+    .pp__caps {
+      grid-template-columns: 1fr;
+    }
+    .pp__caps li:nth-child(2n) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>

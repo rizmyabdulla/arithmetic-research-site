@@ -1,0 +1,15 @@
+---
+import type { Product } from '../data/products';
+import Routes from './visuals/Routes.astro';
+import Waveform from './visuals/Waveform.astro';
+import Lattice from './visuals/Lattice.astro';
+
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+---
+
+{product.motif === 'routes' && <Routes />}
+{product.motif === 'waveform' && <Waveform />}
+{product.motif === 'lattice' && <Lattice seed={product.slug} />}
