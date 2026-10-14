@@ -113,6 +113,9 @@ const year = new Date().getFullYear();
     display: grid;
     gap: 0.7rem;
   }
+  .site-footer__cols a {
+    overflow-wrap: anywhere;
+  }
   .site-footer__cols li {
     display: grid;
     gap: 0.15rem;
@@ -153,6 +156,7 @@ const year = new Date().getFullYear();
   .site-footer__top-link {
     display: inline-flex;
     align-items: center;
+    min-height: 2.75rem;
     gap: 0.4rem;
     color: var(--paper);
   }

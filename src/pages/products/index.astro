@@ -57,12 +57,14 @@ const schema = [
         </div>
         {
           products.map((p, i) => (
-            <a class="ptable__row" role="row" href={`#product-${p.slug}`} style={`--row-accent:${p.theme.accent}`}>
+            <div class="ptable__row ptable__row--link" role="row" style={`--row-accent:${p.theme.accent}`}>
               <span role="cell" class="mono ptable__n">
                 x{subscript(i + 1)}
               </span>
               <span role="cell" class="ptable__name">
-                {p.name}
+                <a class="ptable__link" href={`#product-${p.slug}`}>
+                  {p.name}
+                </a>
               </span>
               <span role="cell" class="ptable__cat">
                 {p.category}
@@ -76,7 +78,7 @@ const schema = [
               <span role="cell" class="ptable__go">
                 <Arrow dir="down" />
               </span>
-            </a>
+            </div>
           ))
         }
         <div class="ptable__row ptable__row--future" role="row">
@@ -146,13 +148,28 @@ const schema = [
     padding: 0.9rem 0;
     color: var(--muted);
   }
-  a.ptable__row:hover,
-  a.ptable__row:focus-visible {
+  .ptable__row--link {
+    position: relative;
+  }
+  .ptable__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .ptable__link:focus-visible {
+    outline: none;
+  }
+  .ptable__row--link:has(.ptable__link:focus-visible) {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+  .ptable__row--link:hover,
+  .ptable__row--link:has(.ptable__link:focus-visible) {
     padding-left: 1rem;
     background: rgb(236 235 229 / 0.04);
   }
   .ptable__n {
-    color: var(--row-accent, var(--muted));
+    color: color-mix(in srgb, var(--row-accent, var(--muted)) 55%, var(--paper));
     text-transform: none;
     font-size: 0.9rem;
   }
@@ -169,7 +186,7 @@ const schema = [
     color: var(--muted);
   }
   .ptable__status {
-    color: var(--row-accent, var(--muted));
+    color: color-mix(in srgb, var(--row-accent, var(--muted)) 55%, var(--paper));
   }
   .ptable__row--future .ptable__name {
     color: var(--muted);
@@ -178,7 +195,7 @@ const schema = [
   .ptable__go :global(.arrow) {
     transition: transform 0.4s var(--ease-out);
   }
-  a.ptable__row:hover .ptable__go :global(.arrow) {
+  .ptable__row--link:hover .ptable__go :global(.arrow) {
     transform: translateY(4px);
   }
 

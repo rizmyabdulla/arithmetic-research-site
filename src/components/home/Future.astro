@@ -116,10 +116,14 @@ const sequence = [
     font-weight: 560;
     letter-spacing: -0.03em;
     white-space: nowrap;
-    opacity: 0.45;
+    /* Unknown terms read as faint, while staying legible on the red. */
+    color: color-mix(in srgb, var(--fg) 55%, var(--bg));
+  }
+  .future__term:not(.is-known) .mono {
+    color: var(--muted);
   }
   .future__term.is-known {
-    opacity: 1;
+    color: var(--fg);
   }
   .future__term .mono {
     font-size: 0.8rem;

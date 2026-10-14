@@ -31,19 +31,19 @@ import { site } from '../../data/site';
           systems around them — and ship them as products people rely on.
         </p>
       </div>
-    </div>
 
-    <div class="hero__annot hero__annot--tl mono" data-hero-fade aria-hidden="true">
-      <span>Fig. 0</span>
-      <span class="muted">The equals sign, with a carried digit</span>
+      <div class="hero__annot hero__annot--tl mono" data-hero-fade aria-hidden="true">
+        <span>Fig. 0</span>
+        <span class="muted">The equals sign, with a carried digit</span>
+      </div>
+      <div class="hero__annot hero__annot--tr mono" data-hero-fade aria-hidden="true">
+        <span data-hero-coords>x 0.500 · y 0.500</span>
+      </div>
+      <a class="hero__cue mono" href="#premise" aria-label="Scroll to compute" data-hero-fade>
+        <span>Scroll to compute</span>
+        <span class="hero__cue-line" aria-hidden="true"></span>
+      </a>
     </div>
-    <div class="hero__annot hero__annot--tr mono" data-hero-fade aria-hidden="true">
-      <span data-hero-coords>x 0.500 · y 0.500</span>
-    </div>
-    <a class="hero__cue mono" href="#premise" data-hero-fade>
-      <span>Scroll to compute</span>
-      <span class="hero__cue-line" aria-hidden="true"></span>
-    </a>
   </div>
 </section>
 
@@ -113,12 +113,13 @@ import { site } from '../../data/site';
   }
 
   .hero__type {
+    --title: clamp(3.4rem, min(13.2vw, 24vh), 15rem);
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
   .hero__title {
-    font-size: clamp(3.4rem, 13.2vw, 15rem);
+    font-size: var(--title);
     font-weight: 650;
     letter-spacing: -0.06em;
     line-height: 0.8;
@@ -171,13 +172,19 @@ import { site } from '../../data/site';
   }
   .hero__annot--tl {
     left: var(--gutter);
-    top: calc(var(--header-h) + 3vh + clamp(3.4rem, 13.2vw, 15rem) * 0.86);
+    top: calc(var(--header-h) + 3vh + var(--title) * 0.86);
   }
   .hero__annot--tr {
     right: var(--gutter);
     top: calc(var(--header-h) + 1.5vh);
     font-variant-numeric: tabular-nums;
     color: var(--fog);
+  }
+  /* The readout follows a pointer; touch screens have none to follow. */
+  @media (hover: none) {
+    .hero__annot--tr {
+      display: none;
+    }
   }
   .hero__cue {
     position: absolute;
@@ -187,7 +194,9 @@ import { site } from '../../data/site';
     align-items: center;
     gap: 0.8rem;
     color: var(--fog);
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
+    min-height: 2.75rem;
+    pointer-events: auto;
   }
   .hero__cue:hover {
     color: var(--paper);
@@ -228,8 +237,8 @@ import { site } from '../../data/site';
       transform: translate(-50%, -50%);
       top: 47%;
     }
-    .hero__title {
-      font-size: clamp(3.2rem, 17.5vw, 8rem);
+    .hero__type {
+      --title: clamp(3.2rem, 17.5vw, 8rem);
     }
     .hero__word--a {
       top: calc(var(--header-h) + 2vh);
