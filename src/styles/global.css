@@ -362,6 +362,17 @@ textarea {
   background-size: 0% 1px;
   background-position: 100% 100%;
 }
+/* On touch screens, give short text links a finger-sized hit area without moving the text. */
+@media (pointer: coarse) {
+  .link {
+    position: relative;
+  }
+  .link::after {
+    content: '';
+    position: absolute;
+    inset: -0.7rem -0.35rem;
+  }
+}
 
 .btn {
   --btn-bg: var(--fg);
